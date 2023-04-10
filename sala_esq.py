@@ -15,6 +15,12 @@ import random
 LEFT_PLAYER = 0
 RIGHT_PLAYER = 1
 SIDESSTR = ["left", "right"]
+
+BALL1 = 0
+BALL2 = 1
+BALL3 = 2
+BALL4 = 3
+
 SIZE = (787, 525)
 X=0
 Y=1
@@ -59,7 +65,8 @@ class Player():
         return f"P<{SIDESSTR[self.side]}, {self.pos}>"
 
 class Ball():
-    def __init__(self, velocity):
+    def __init__(self, velocity, ball):
+        self.ball = ball
         self.pos=[ SIZE[X]//2, SIZE[Y]//2 ]
         self.velocity = velocity
 
@@ -91,7 +98,7 @@ class Ball():
 class Game():
     def __init__(self, manager):
         self.players = manager.list( [Player(LEFT_PLAYER), Player(RIGHT_PLAYER)] )
-        self.ball = manager.list( [ Ball([-2,2]) ] )
+        self.balls = manager.list( [Ball([-2,2], BALL1), Ball([2,2], BALL2), Ball([-2,-2], BALL3), Ball([2,-2], BALL4) ] )
         self.score = manager.list( [0,0] )
         self.running = Value('i', 1) # 1 running
         self.lock = Lock()
@@ -99,8 +106,8 @@ class Game():
     def get_player(self, side):
         return self.players[side]
 
-    def get_ball(self):
-        return self.ball[0]
+    def get_ball(self, ball):
+        return self.balls[ball]
 
     def get_score(self):
         return list(self.score)
@@ -139,39 +146,42 @@ class Game():
         self.players[player] = p
         self.lock.release()
 
-    def ball_collide(self, player):
+    def ball_collide(self, player, ball):
         self.lock.acquire()
-        ball = self.ball[0]
+        ball = self.balls[ball]
         self.score[abs(player - 1)] += 1 #le sumamos uno al marcador del jugador contrario
         ball.update2()
-        self.ball[0] = ball
+        self.balls[ball] = ball
         self.lock.release()
 
     def get_info(self):
         info = {
             'pos_left_player': self.players[LEFT_PLAYER].get_pos(),
             'pos_right_player': self.players[RIGHT_PLAYER].get_pos(),
-            'pos_ball': self.ball[0].get_pos(),
+            'pos_ball1': self.balls[BALL1].get_pos(),
+            'pos_ball2': self.balls[BALL2].get_pos(),
+            'pos_ball3': self.balls[BALL3].get_pos(),
+            'pos_ball4': self.balls[BALL4].get_pos(),
             'score': list(self.score),
             'is_running': self.running.value == 1
         }
         return info
 
-    def move_ball(self):
+    def move_ball(self, ball):
         self.lock.acquire()
-        ball = self.ball[0]
+        ball = self.balls[ball]
         ball.update()
         pos = ball.get_pos()
         if pos[Y]<0 or pos[Y]>SIZE[Y]:
             ball.bounce(Y)
         if pos[X]>SIZE[X] or pos[X] < 0:
             ball.bounce(X)
-        self.ball[0]=ball
+        self.balls[ball]=ball
         self.lock.release()
 
 
     def __str__(self):
-        return f"G<{self.players[RIGHT_PLAYER]}:{self.players[LEFT_PLAYER]}:{self.ball[0]}:{self.running.value}>"
+        return f"G<{self.players[RIGHT_PLAYER]}:{self.players[LEFT_PLAYER]}:{self.balls[BALL1]}:{self.balls[BALL2]}:{self.balls[BALL3]}:{self.balls[BALL4]}:{self.running.value}>"
 
 def player(side, conn, game):
     try:
@@ -190,11 +200,13 @@ def player(side, conn, game):
                 elif command == "left":
                     game.moveLeft(side)
                 elif command == "collide":
-                    game.ball_collide(side)
+                    for i in range(4):
+                        game.ball_collide(side,i)
                 elif command == "quit":
                     game.stop()
             if side == 1:
-                game.move_ball()
+                for i in range(4):
+                    game.move_ball(i)
             conn.send(game.get_info())
     except:
         traceback.print_exc()

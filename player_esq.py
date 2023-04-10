@@ -27,6 +27,11 @@ PLAYER_COLOR = [GREEN, YELLOW]
 PLAYER_HEIGHT = 60
 PLAYER_WIDTH = 10
 
+BALL1 = 0
+BALL2 = 1
+BALL3 = 2
+BALL4 = 3
+
 BALL_COLOR = WHITE
 BALL_SIZE = 10
 FPS = 60
@@ -55,7 +60,8 @@ class Player():
         return f"P<{SIDES[self.side], self.pos}>"
 
 class Ball():
-    def __init__(self):
+    def __init__(self, ball):
+        self.ball = ball
         self.pos=[ None, None ]
 
     def get_pos(self):
@@ -71,7 +77,7 @@ class Ball():
 class Game():
     def __init__(self):
         self.players = [Player(i) for i in range(2)]
-        self.ball = Ball()
+        self.balls = [Ball(i) for i in range(4)]
         self.score = [0,0]
         self.running = True
 
@@ -82,11 +88,11 @@ class Game():
         self.players[side].set_pos(pos)
 
 
-    def get_ball(self):
-        return self.ball
+    def get_ball(self,ball):
+        return self.balls[ball]
 
-    def set_ball_pos(self, pos):
-        self.ball.set_pos(pos)
+    def set_ball_pos(self, ball, pos):
+        self.balls[ball].set_pos(pos)
 
     def get_score(self):
         return self.score
@@ -98,7 +104,10 @@ class Game():
     def update(self, gameinfo):
         self.set_pos_player(LEFT_PLAYER, gameinfo['pos_left_player'])
         self.set_pos_player(RIGHT_PLAYER, gameinfo['pos_right_player'])
-        self.set_ball_pos(gameinfo['pos_ball'])
+        self.set_ball_pos(BALL1, gameinfo['pos_ball1'])
+        self.set_ball_pos(BALL2, gameinfo['pos_ball2'])
+        self.set_ball_pos(BALL3, gameinfo['pos_ball3'])
+        self.set_ball_pos(BALL4, gameinfo['pos_ball4'])
         self.set_score(gameinfo['score'])
         self.running = gameinfo['is_running']
 
@@ -154,7 +163,7 @@ class Display():
         self.game = game
         self.people = [Person(self.game.get_player(i)) for i in range(2)]
         
-        self.balls = [BallSprite(self.game.get_ball()) for i in range(4)]
+        self.balls = [BallSprite(self.game.get_ball(i)) for i in range(4)]
         
         self.all_sprites = pygame.sprite.Group()
         self.people_group = pygame.sprite.Group()
@@ -169,7 +178,7 @@ class Display():
         self.background = pygame.image.load('espacio2.png')
         pygame.init()
 
-    def analyze_events(self, side, ball):
+    def analyze_events(self, side):
         events = []
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
