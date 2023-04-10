@@ -169,7 +169,7 @@ class Display():
         self.background = pygame.image.load('espacio2.png')
         pygame.init()
 
-    def analyze_events(self, side):
+    def analyze_events(self, side, ball):
         events = []
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
@@ -185,8 +185,9 @@ class Display():
                     events.append("left")
             elif event.type == pygame.QUIT:
                 events.append("quit")
-        if pygame.sprite.collide_rect(self.ball, self.people[side]):
-            events.append("collide")
+        for ball in self.balls:
+            if pygame.sprite.collide_rect(ball, self.people[side]):
+                events.append("collide")
         return events
 
 
