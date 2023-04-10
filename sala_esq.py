@@ -169,14 +169,14 @@ class Game():
 
     def move_ball(self, ball):
         self.lock.acquire()
-        ball = self.balls[ball]
-        ball.update()
-        pos = ball.get_pos()
+        bola = self.balls[ball]
+        bola.update()
+        pos = bola.get_pos()
         if pos[Y]<0 or pos[Y]>SIZE[Y]:
-            ball.bounce(Y)
+            bola.bounce(Y)
         if pos[X]>SIZE[X] or pos[X] < 0:
-            ball.bounce(X)
-        self.balls[ball]=ball
+            bola.bounce(X)
+        self.balls[ball]=bola
         self.lock.release()
 
 
