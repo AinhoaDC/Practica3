@@ -194,9 +194,18 @@ class Display():
                     events.append("left")
             elif event.type == pygame.QUIT:
                 events.append("quit")
+        cont = 0
         for ball in self.balls:
             if pygame.sprite.collide_rect(ball, self.people[side]):
-                events.append("collide")
+                if cont == 0 : 
+                    events.append("collide1")
+                elif cont == 1 : 
+                    events.append("collide2")
+                elif cont == 2 : 
+                    events.append("collide3")
+                elif cont == 3 : 
+                    events.append("collide4") 
+            cont += 1
         return events
 
 

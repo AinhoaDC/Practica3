@@ -148,10 +148,10 @@ class Game():
 
     def ball_collide(self, player, ball):
         self.lock.acquire()
-        ball = self.balls[ball]
+        bola = self.balls[ball]
         self.score[abs(player - 1)] += 1 #le sumamos uno al marcador del jugador contrario
-        ball.update2()
-        self.balls[ball] = ball
+        bola.update2()
+        self.balls[ball] = bola
         self.lock.release()
 
     def get_info(self):
@@ -199,9 +199,14 @@ def player(side, conn, game):
                     game.moveRight(side)
                 elif command == "left":
                     game.moveLeft(side)
-                elif command == "collide":
-                    for i in range(4):
-                        game.ball_collide(side,i)
+                elif command == "collide1":
+                    game.ball_collide(side,0)
+                elif command == "collide2":
+                    game.ball_collide(side,1)
+                elif command == "collide3":
+                    game.ball_collide(side,2)
+                elif command == "collide4":
+                    game.ball_collide(side,3)
                 elif command == "quit":
                     game.stop()
             if side == 1:
@@ -240,7 +245,7 @@ def main(ip_address):
         traceback.print_exc()
 
 if __name__=='__main__':
-    ip_address = "10.8.0.6"
+    ip_address = "10.8.0.5"
     if len(sys.argv)>1:
         ip_address = sys.argv[1]
 
