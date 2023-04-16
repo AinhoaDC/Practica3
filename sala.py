@@ -70,10 +70,7 @@ class Ball():
     def bounce(self, AXIS):
         self.velocity[AXIS] = -self.velocity[AXIS]
 
-    """def collide_player(self, side):
-        self.bounce(X)
-        self.pos[X] += 3*self.velocity[X]
-        self.pos[Y] += 3*self.velocity[Y] """#igual esta funcion no nos va a hacer falta.
+
  
 
     def __str__(self):
