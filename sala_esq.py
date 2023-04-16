@@ -87,11 +87,6 @@ class Ball():
     def bounce(self, AXIS):
         self.velocity[AXIS] = -self.velocity[AXIS]
 
-    """def collide_player(self, side):
-        self.bounce(X)
-        self.pos[X] += 3*self.velocity[X]
-        self.pos[Y] += 3*self.velocity[Y] """#igual esta funcion no nos va a hacer falta.
- 
 
     def __str__(self):
         return f"B<{self.pos, self.velocity}>"
@@ -185,7 +180,7 @@ class Game():
 
 
     def __str__(self):
-        return f"G<{self.players[RIGHT_PLAYER]}:{self.players[LEFT_PLAYER]}:{self.balls[BALL1]}:{self.balls[BALL2]}:{self.balls[BALL3]}:{self.balls[BALL4]}:{self.running.value}>"
+        return f"G<{self.players[RIGHT_PLAYER]}:{self.players[LEFT_PLAYER]}:{self.balls[BALL1]}:{self.balls[BALL2]}:{self.balls[BALL3]}:{self.balls[BALL4]}:{self.balls[BALL5]}:{self.balls[BALL6]}:{self.running.value}>"
 
 def player(side, conn, game):
     try:
@@ -218,7 +213,7 @@ def player(side, conn, game):
                 elif command == "quit":
                     game.stop()
             if side == 1:
-                for i in range(4):
+                for i in range(6):
                     game.move_ball(i)
             conn.send(game.get_info())
     except:
