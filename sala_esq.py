@@ -95,7 +95,7 @@ class Ball():
 class Game():
     def __init__(self, manager):
         self.players = manager.list( [Player(LEFT_PLAYER), Player(RIGHT_PLAYER)] )
-        self.balls = manager.list( [Ball([-2,2], BALL1), Ball([2,2], BALL2), Ball([-2,-2], BALL3), Ball([2,-2], BALL4), Ball([2,-2], BALL5), Ball([2,-2], BALL6) ] )
+        self.balls = manager.list( [Ball([-2,2], BALL1), Ball([2,2.1], BALL2), Ball([-2.2,-2], BALL3), Ball([2,-2.1], BALL4), Ball([1,-1], BALL5), Ball([1,1.2], BALL6) ] )
         self.score = manager.list( [0,0] )
         self.running = Value('i', 1) # 1 running
         self.lock = Lock()
