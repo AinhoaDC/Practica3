@@ -30,7 +30,9 @@ PLAYER_WIDTH = 10
 BALL1 = 0
 BALL2 = 1
 BALL3 = 2
-BALL4 = 3
+BALL4 = 3 
+BALL5 = 4 
+BALL6 = 5 
 
 BALL_COLOR = WHITE
 BALL_SIZE = 10
@@ -77,7 +79,7 @@ class Ball():
 class Game():
     def __init__(self):
         self.players = [Player(i) for i in range(2)]
-        self.balls = [Ball(i) for i in range(4)]
+        self.balls = [Ball(i) for i in range(6)]
         self.score = [0,0]
         self.running = True
 
@@ -108,6 +110,8 @@ class Game():
         self.set_ball_pos(BALL2, gameinfo['pos_ball2'])
         self.set_ball_pos(BALL3, gameinfo['pos_ball3'])
         self.set_ball_pos(BALL4, gameinfo['pos_ball4'])
+        self.set_ball_pos(BALL5, gameinfo['pos_ball5']) 
+        self.set_ball_pos(BALL6, gameinfo['pos_ball6'])
         self.set_score(gameinfo['score'])
         self.running = gameinfo['is_running']
 
@@ -163,7 +167,7 @@ class Display():
         self.game = game
         self.people = [Person(self.game.get_player(i)) for i in range(2)]
         
-        self.balls = [BallSprite(self.game.get_ball(i)) for i in range(4)]
+        self.balls = [BallSprite(self.game.get_ball(i)) for i in range(6)]
         
         self.all_sprites = pygame.sprite.Group()
         self.people_group = pygame.sprite.Group()
@@ -205,6 +209,10 @@ class Display():
                     events.append("collide3")
                 elif cont == 3 : 
                     events.append("collide4") 
+                elif cont == 4 : 
+                    events.append("collide5") 
+                elif cont == 5 : 
+                    events.append("collide6") 
             cont += 1
         return events
 
