@@ -74,15 +74,6 @@ class Ball():
     def update2(self):
         self.pos[X] = random.randint(0,SIZE[X]) #no sabemos si pa que entre el 700 tenemos que poner 701 y 526
         self.pos[Y] = random.randint(0,SIZE[Y]) 
-        if self.score[player] % 5 == 0: #queremos que la velocidad aumente
-            if self.velocity[0] > 0:
-                self.velocity[0]+=0.25
-            else:
-                self.velocity[0]-=0.25
-            if self.velocity[1] > 0:
-                self.velocity[1]+=0.25
-            else:
-                self.velocity[1]-=0.25
        
 
     def bounce(self, AXIS):
@@ -150,6 +141,15 @@ class Game():
         ball = self.ball[0]
         self.score[player] += 1
         ball.update2()
+        if self.score[player] % 5 == 0: #queremos que la velocidad aumente
+            if ball.velocity[0] > 0:
+                ball.velocity[0]+=0.25
+            else:
+                ball.velocity[0]-=0.25
+            if ball.velocity[1] > 0:
+                ball.velocity[1]+=0.25
+            else:
+                ball.velocity[1]-=0.25
         self.ball[0] = ball
         self.lock.release()
 
