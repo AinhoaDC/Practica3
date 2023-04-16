@@ -20,6 +20,8 @@ BALL1 = 0
 BALL2 = 1
 BALL3 = 2
 BALL4 = 3
+BALL5 = 4
+BALL6 = 5
 
 SIZE = (787, 525)
 X=0
@@ -98,7 +100,7 @@ class Ball():
 class Game():
     def __init__(self, manager):
         self.players = manager.list( [Player(LEFT_PLAYER), Player(RIGHT_PLAYER)] )
-        self.balls = manager.list( [Ball([-2,2], BALL1), Ball([2,2], BALL2), Ball([-2,-2], BALL3), Ball([2,-2], BALL4) ] )
+        self.balls = manager.list( [Ball([-2,2], BALL1), Ball([2,2], BALL2), Ball([-2,-2], BALL3), Ball([2,-2], BALL4), Ball([2,-2], BALL5), Ball([2,-2], BALL6) ] )
         self.score = manager.list( [0,0] )
         self.running = Value('i', 1) # 1 running
         self.lock = Lock()
@@ -162,6 +164,8 @@ class Game():
             'pos_ball2': self.balls[BALL2].get_pos(),
             'pos_ball3': self.balls[BALL3].get_pos(),
             'pos_ball4': self.balls[BALL4].get_pos(),
+            'pos_ball5': self.balls[BALL5].get_pos(),
+            'pos_ball6': self.balls[BALL6].get_pos(),
             'score': list(self.score),
             'is_running': self.running.value == 1
         }
@@ -207,6 +211,10 @@ def player(side, conn, game):
                     game.ball_collide(side,2)
                 elif command == "collide4":
                     game.ball_collide(side,3)
+                elif command == "collide5":
+                     game.ball_collide(side,4)
+                elif command == "collide6":
+                     game.ball_collide(side,5)
                 elif command == "quit":
                     game.stop()
             if side == 1:
