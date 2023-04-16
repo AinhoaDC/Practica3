@@ -73,7 +73,17 @@ class Ball():
     #hacer funcion extra update2, que se llame cuando uno de los jugadores toca la bola, pa cambiarla de posicion a un sitio random:
     def update2(self):
         self.pos[X] = random.randint(0,SIZE[X]) #no sabemos si pa que entre el 700 tenemos que poner 701 y 526
-        self.pos[Y] = random.randint(0,SIZE[Y])
+        self.pos[Y] = random.randint(0,SIZE[Y]) 
+        if self.score[player] % 5 == 0: #queremos que la velocidad aumente
+            if self.velocity[0] > 0:
+                self.velocity[0]+=0.25
+            else:
+                self.velocity[0]-=0.25
+            if self.velocity[1] > 0:
+                self.velocity[1]+=0.25
+            else:
+                self.velocity[1]-=0.25
+       
 
     def bounce(self, AXIS):
         self.velocity[AXIS] = -self.velocity[AXIS]
@@ -139,15 +149,6 @@ class Game():
         self.lock.acquire()
         ball = self.ball[0]
         self.score[player] += 1
-        if self.score[player] % 5 == 0: #queremos que la velocidad aumente
-            if self.velocity[0] > 0:
-                self.velocity[0]+=0.25
-            else:
-                self.velocity[0]-=0.25
-            if self.velocity[1] > 0:
-                self.velocity[1]+=0.25
-            else:
-                self.velocity[1]-=0.25
         ball.update2()
         self.ball[0] = ball
         self.lock.release()
