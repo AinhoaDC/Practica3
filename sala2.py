@@ -142,9 +142,9 @@ class Game():
         if self.score[player] % 5 == 0: #queremos que la velocidad aumente
             if self.velocity[0] > 0:
                 self.velocity[0]+=0.25
-            elif self.velocity[0] < 0:
+            else:
                 self.velocity[0]-=0.25
-            elif self.velocity[1] > 0:
+            if self.velocity[1] > 0:
                 self.velocity[1]+=0.25
             else:
                 self.velocity[1]-=0.25
