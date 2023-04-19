@@ -230,7 +230,7 @@ def main(ip_address):
 
 
 if __name__=="__main__":
-    ip_address = "10.8.0.6"
+    ip_address = "10.8.0.5"
     if len(sys.argv)>1:
         ip_address = sys.argv[1]
     main(ip_address)
