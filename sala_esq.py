@@ -147,7 +147,7 @@ class Game():
         self.lock.acquire()
         bola = self.balls[ball]
         self.score[abs(player - 1)] += 1 #le sumamos uno al marcador del jugador contrario
-        if self.score[player] % 5 == 0: #queremos que la velocidad aumente
+        if self.score[player] % 10 == 0: #queremos que la velocidad aumente
             if bola.velocity[0] > 0:
                 bola.velocity[0]+=0.25
             else:
@@ -257,7 +257,7 @@ def main(ip_address):
         traceback.print_exc()
 
 if __name__=='__main__':
-    ip_address = "10.8.0.6"
+    ip_address = "10.8.0.5"
     if len(sys.argv)>1:
         ip_address = sys.argv[1]
 
