@@ -23,7 +23,7 @@ BALL4 = 3
 BALL5 = 4
 BALL6 = 5
 
-SIZE = (787, 525)
+SIZE = (800, 415)
 X=0
 Y=1
 DELTA = 30
@@ -147,6 +147,15 @@ class Game():
         self.lock.acquire()
         bola = self.balls[ball]
         self.score[abs(player - 1)] += 1 #le sumamos uno al marcador del jugador contrario
+        if self.score[player] % 5 == 0: #queremos que la velocidad aumente
+            if bola.velocity[0] > 0:
+                bola.velocity[0]+=0.25
+            else:
+                bola.velocity[0]-=0.25
+            if bola.velocity[1] > 0:
+                bola.velocity[1]+=0.25
+            else:
+                bola.velocity[1]-=0.25
         bola.update2()
         self.balls[ball] = bola
         self.lock.release()
@@ -248,7 +257,7 @@ def main(ip_address):
         traceback.print_exc()
 
 if __name__=='__main__':
-    ip_address = "10.8.0.5"
+    ip_address = "10.8.0.6"
     if len(sys.argv)>1:
         ip_address = sys.argv[1]
 
