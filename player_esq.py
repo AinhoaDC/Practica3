@@ -19,13 +19,13 @@ YELLOW = (255,255,0)
 GREEN = (0,255,0)
 X = 0
 Y = 1
-SIZE = (787, 525) #al haber cambiado el tamaño de imagen, tenemos que cambiar algunas cosas de los limites en el rebote de la bola y hasta donde se pueden mover los personajes.
+SIZE = (800, 415) #al haber cambiado el tamaño de imagen, tenemos que cambiar algunas cosas de los limites en el rebote de la bola y hasta donde se pueden mover los personajes.
 
 LEFT_PLAYER = 0
 RIGHT_PLAYER = 1
 PLAYER_COLOR = [GREEN, YELLOW]
-PLAYER_HEIGHT = 60
-PLAYER_WIDTH = 10
+PLAYER_HEIGHT = 100
+PLAYER_WIDTH = 100
 
 BALL1 = 0
 BALL2 = 1
@@ -35,7 +35,8 @@ BALL5 = 4
 BALL6 = 5 
 
 BALL_COLOR = WHITE
-BALL_SIZE = 10
+BALL_WIDTH = 36
+BALL_HEIGHT = 30
 FPS = 60
 
 
@@ -43,6 +44,11 @@ FPS = 60
 
 SIDES = ["left", "right"]
 SIDESSTR = ["left", "right"]
+
+game_folder = os.path.dirname(__file__)
+img_folder = os.path.join(game_folder,'img')
+player_img = pygame.image.load(os.path.join(img_folder, 'astr.png'))
+ball_img = pygame.image.load(os.path.join(img_folder, 'meteor.png'))
 
 class Player():
     def __init__(self, side):
@@ -128,13 +134,10 @@ class Game():
 class Person(pygame.sprite.Sprite):
     def __init__(self, player):
       super().__init__()
-      self.image = pygame.Surface([PLAYER_WIDTH, PLAYER_HEIGHT])
-      self.image.fill(BLACK)
-      self.image.set_colorkey(BLACK)
       self.player = player
-      color = PLAYER_COLOR[self.player.get_side()]
-      pygame.draw.rect(self.image, color, [0,0,PLAYER_WIDTH, PLAYER_HEIGHT])
+      self.image = player_img
       self.rect = self.image.get_rect()
+      self.rect.center = (PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2)
       self.update()
 
     def update(self):
@@ -149,11 +152,9 @@ class BallSprite(pygame.sprite.Sprite):
     def __init__(self, ball):
         super().__init__()
         self.ball = ball
-        self.image = pygame.Surface((BALL_SIZE, BALL_SIZE))
-        self.image.fill(BLACK)
-        self.image.set_colorkey(BLACK)
-        pygame.draw.rect(self.image, BALL_COLOR, [0, 0, BALL_SIZE, BALL_SIZE])
+        self.image = ball_img
         self.rect = self.image.get_rect()
+        self.rect.center = (BALL_WIDTH / 2, BALL_HEIGHT / 2)
         self.update()
 
     def update(self):
@@ -179,7 +180,7 @@ class Display():
 
         self.screen = pygame.display.set_mode(SIZE)
         self.clock =  pygame.time.Clock()  #FPS
-        self.background = pygame.image.load('espacio2.png')
+        self.background = pygame.image.load('planet.png')
         pygame.init()
 
     def analyze_events(self, side):
@@ -263,7 +264,7 @@ def main(ip_address):
 
 
 if __name__=="__main__":
-    ip_address = "10.8.0.5"
+    ip_address = "10.8.0.6"
     if len(sys.argv)>1:
         ip_address = sys.argv[1]
     main(ip_address)
