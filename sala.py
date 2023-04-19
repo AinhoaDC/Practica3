@@ -12,6 +12,8 @@ X=0
 Y=1
 DELTA = 30
 
+
+
 class Player():
     def __init__(self, side):
         self.side = side
