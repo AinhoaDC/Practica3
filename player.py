@@ -16,11 +16,10 @@ SIZE = (787, 525) #al haber cambiado el tamaño de imagen, tenemos que cambiar a
 LEFT_PLAYER = 0
 RIGHT_PLAYER = 1
 PLAYER_COLOR = [GREEN, YELLOW]
-PLAYER_HEIGHT = 60
-PLAYER_WIDTH = 10
+PLAYER_HEIGHT = 100
+PLAYER_WIDTH = 95
 
-BALL_COLOR = WHITE
-BALL_SIZE = 10
+BALL_SIZE = 30
 FPS = 60
 
 
@@ -28,6 +27,8 @@ FPS = 60
 
 SIDES = ["left", "right"]
 SIDESSTR = ["left", "right"]
+
+
 
 class Player():
     def __init__(self, side):
@@ -104,16 +105,20 @@ class Game():
         return f"G<{self.players[RIGHT_PLAYER]}:{self.players[LEFT_PLAYER]}:{self.ball}>"
 
 
+#para crear sprites con las imágenes que nosotras queremos hacemos lo siguiente:
+game_folder = os.path.dirname(__file__)
+img_folder = os.path.join(game_folder,'img')
+player_img = pygame.image.load(os.path.join(img_folder, 'nave.png'))
+
 class Person(pygame.sprite.Sprite):
     def __init__(self, player):
       super().__init__()
-      self.image = pygame.Surface([PLAYER_WIDTH, PLAYER_HEIGHT])
-      self.image.fill(BLACK)
-      self.image.set_colorkey(BLACK)#drawing the paddle
+      pygame.sprite.Sprite.__init__(self)
       self.player = player
-      color = PLAYER_COLOR[self.player.get_side()]
-      pygame.draw.rect(self.image, color, [0,0,PLAYER_WIDTH, PLAYER_HEIGHT])
+      self.image = player_img
+      self.image.set_colorkey(BLACK)
       self.rect = self.image.get_rect()
+      self.rect.center = (PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2)
       self.update()
 
     def update(self):
@@ -123,16 +128,15 @@ class Person(pygame.sprite.Sprite):
     def __str__(self):
         return f"S<{self.player}>"
 
+player_img2 = pygame.image.load(os.path.join(img_folder, 'estrella.png'))
 
 class BallSprite(pygame.sprite.Sprite):
     def __init__(self, ball):
         super().__init__()
         self.ball = ball
-        self.image = pygame.Surface((BALL_SIZE, BALL_SIZE))
-        self.image.fill(BLACK)
-        self.image.set_colorkey(BLACK)
-        pygame.draw.rect(self.image, BALL_COLOR, [0, 0, BALL_SIZE, BALL_SIZE])
+        self.image = player_img2
         self.rect = self.image.get_rect()
+        self.rect.center = (BALL_SIZE / 2, BALL_SIZE / 2)
         self.update()
 
     def update(self):
