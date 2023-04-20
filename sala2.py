@@ -1,9 +1,6 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Apr 16 13:04:37 2023
 
-@author: prpa
+"""
+Práctica realizada por Ainhoa Díaz Cabrera y Claudia Gómez Alonso.
 """
 
 from multiprocessing.connection import Listener
@@ -20,13 +17,17 @@ X=0
 Y=1
 DELTA = 30
 
+
+"""Esta es la clase de los jugadores que, en este caso, serán las naves espaciales que irán a por la 
+estrella para obtener puntos. Tendrá como atributo side, que indicará qué jugador es el que está
+ejecutando los movimientos"""
 class Player():
     def __init__(self, side):
         self.side = side
         if side == LEFT_PLAYER:
             self.pos = [5, SIZE[Y]//2]
         else:
-            self.pos = [SIZE[X] - 5, SIZE[Y]//2]#no sabemos por que, no se cambia segun cambiamos el tamaño: preguntar.
+            self.pos = [SIZE[X] - 5, SIZE[Y]//2]
 
     def get_pos(self):
         return self.pos
@@ -58,6 +59,9 @@ class Player():
     def __str__(self):
         return f"P<{SIDESSTR[self.side]}, {self.pos}>"
 
+
+"""Aquí tenemos la clase Ball, que representa a la estrella y se irá moviendo por el tablero y rebotando
+en los bordes a una velocidad específica, que aparece como atributo 'velocity' y será un vector."""
 class Ball():
     def __init__(self, velocity):
         self.pos=[ SIZE[X]//2, SIZE[Y]//2 ]
@@ -69,10 +73,11 @@ class Ball():
     def update(self):
         self.pos[X] += self.velocity[X]
         self.pos[Y] += self.velocity[Y]
-        
-    #hacer funcion extra update2, que se llame cuando uno de los jugadores toca la bola, pa cambiarla de posicion a un sitio random:
-    def update2(self):
-        self.pos[X] = random.randint(0,SIZE[X]) #no sabemos si pa que entre el 700 tenemos que poner 701 y 526
+    
+    #esta es una función de actualización a la que se llamará cuando alguno de los jugadores (naves) 
+    #alcance la bola, de modo que esta cambiará de posición a una aleatoria en ese instante.
+    def update2(self): 
+        self.pos[X] = random.randint(0,SIZE[X]) 
         self.pos[Y] = random.randint(0,SIZE[Y]) 
        
 
@@ -85,6 +90,8 @@ class Ball():
         return f"B<{self.pos, self.velocity}>"
 
 
+""""Esta clase es la que nos va a decir el estado del juego en cada momento, crea los jugadores
+y la bola, así como otras variables que se necesitan, como la puntuación.  """
 class Game():
     def __init__(self, manager):
         self.players = manager.list( [Player(LEFT_PLAYER), Player(RIGHT_PLAYER)] )
@@ -107,7 +114,10 @@ class Game():
 
     def stop(self):
         self.running.value = 0
-
+    
+    #los siguientes cuatro métodos especifican los movimientos que pueden realizar cada uno de los 
+    #jugadores, que se mueven controlados por el teclado por todo el tablero en busca de la bola (estrella).
+    
     def moveUp(self, player):
         self.lock.acquire()
         p = self.players[player]
@@ -136,6 +146,10 @@ class Game():
         self.players[player] = p
         self.lock.release()
 
+    #cuando las bolas chocan con algún jugador, es decir alguna nave alcanza la estrella, lo que 
+    #ocurrirá será que se sume un punto al jugador que haya conseguido atraparla. Además, si alguno
+    #de los jugadores llega a 5 puntos o un múltiplo suyo, la velocidad de la bola aumentará, 
+    #dificultando un poco el juego.
     def ball_collide(self, player):
         self.lock.acquire()
         ball = self.ball[0]
@@ -168,7 +182,7 @@ class Game():
         ball = self.ball[0]
         ball.update()
         pos = ball.get_pos()
-        if pos[Y]<0 or pos[Y]>SIZE[Y]:
+        if pos[Y]<0 or pos[Y]>SIZE[Y]: #cuando la bola alcanza alguno de los bordes, rebota.
             ball.bounce(Y)
         if pos[X]>SIZE[X] or pos[X] < 0:
             ball.bounce(X)
@@ -179,6 +193,9 @@ class Game():
     def __str__(self):
         return f"G<{self.players[RIGHT_PLAYER]}:{self.players[LEFT_PLAYER]}:{self.ball[0]}:{self.running.value}>"
 
+
+""""Esta función va a ir analizando cada uno de los comandos que hay para llamar a la función
+correspondiente, según lo que se pide en cada momento que se haga,"""
 def player(side, conn, game):
     try:
         print(f"starting player {SIDESSTR[side]}:{game.get_info()}")

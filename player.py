@@ -3,6 +3,8 @@ import traceback
 import pygame
 import sys, os
 
+
+#a continuación tenemos una serie de constantes que nos servirán a lo largo del programa:
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
@@ -11,7 +13,7 @@ YELLOW = (255,255,0)
 GREEN = (0,255,0)
 X = 0
 Y = 1
-SIZE = (787, 525) #al haber cambiado el tamaño de imagen, tenemos que cambiar algunas cosas de los limites en el rebote de la bola y hasta donde se pueden mover los personajes.
+SIZE = (787, 525) #el tamaño tiene que coincidir con el tamaño de la imagen que vamos a poner como fondo.
 
 LEFT_PLAYER = 0
 RIGHT_PLAYER = 1
@@ -30,6 +32,8 @@ SIDESSTR = ["left", "right"]
 
 
 
+
+"""De nuevo tenemos la clase player, ball y game con sus métodos correspondientes"""
 class Player():
     def __init__(self, side):
         self.side = side
@@ -104,6 +108,8 @@ class Game():
     def __str__(self):
         return f"G<{self.players[RIGHT_PLAYER]}:{self.players[LEFT_PLAYER]}:{self.ball}>"
 
+""""Ahora crearemos varias clases para crear los Sprites tanto de los jugadores como de la bola, de modo
+que podamos colocarlos en el tablero de manera visible y correcta"""
 
 #para crear sprites con las imágenes que nosotras queremos hacemos lo siguiente:
 game_folder = os.path.dirname(__file__)
@@ -128,7 +134,7 @@ class Person(pygame.sprite.Sprite):
     def __str__(self):
         return f"S<{self.player}>"
 
-player_img2 = pygame.image.load(os.path.join(img_folder, 'estrella.png'))
+player_img2 = pygame.image.load(os.path.join(img_folder, 'estrella.png')) #imagen para el sprite de la bola.
 
 class BallSprite(pygame.sprite.Sprite):
     def __init__(self, ball):
@@ -144,13 +150,14 @@ class BallSprite(pygame.sprite.Sprite):
         self.rect.centerx, self.rect.centery = pos
 
 
-
+""""En esta clase desarrollaremos todo el juego, se analizarán los eventos que van teniendo lugar en el 
+juego uno a uno para ejecutar los movimientos deseados en cada momento"""
 class Display():
     def __init__(self, game):
         self.game = game
         self.people = [Person(self.game.get_player(i)) for i in range(2)]
 
-        self.ball = BallSprite(self.game.get_ball())
+        self.ball = BallSprite(self.game.get_ball()) #colocamos en el tablero la bola.
         self.all_sprites = pygame.sprite.Group()
         self.people_group = pygame.sprite.Group()
         for person  in self.people:
@@ -160,9 +167,10 @@ class Display():
 
         self.screen = pygame.display.set_mode(SIZE)
         self.clock =  pygame.time.Clock()  #FPS
-        self.background = pygame.image.load('espacio2.png')
+        self.background = pygame.image.load('espacio2.png') #elegimos la imagen que queremos poner en el fondo.
         pygame.init()
 
+    #según la tecla que se pulse, se ejecuta una acción u otra.
     def analyze_events(self, side):
         events = []
         for event in pygame.event.get():
