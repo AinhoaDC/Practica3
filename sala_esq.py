@@ -1,9 +1,5 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Created on Mon Apr 10 12:20:29 2023
-
-@author: prpa
+Práctica realizada por Ainhoa Díaz Cabrera y Claudia Gómez Alonso.
 """
 
 from multiprocessing.connection import Listener
@@ -11,22 +7,27 @@ from multiprocessing import Process, Manager, Value, Lock
 import traceback
 import sys
 import random
-from math import sqrt
+
+#a continuación tenemos una serie de constantes que nos servirán a lo largo del programa:
 LEFT_PLAYER = 0
 RIGHT_PLAYER = 1
 SIDESSTR = ["left", "right"]
 
-BALL1 = 0
+BALL1 = 0 #en este caso, al igual que para los jugadores, necesitaremos identificadores para cada una de las bolas de nuestro tablero
 BALL2 = 1
 BALL3 = 2
 BALL4 = 3
 BALL5 = 4
 BALL6 = 5
 
-SIZE = (800, 415)
+SIZE = (800, 415) #el tamaño tiene que coincidir con el tamaño de la imagen que vamos a poner como fondo.
 X=0
 Y=1
 DELTA = 30
+
+"""Esta es la clase de los jugadores que, en este caso, serán laos astronautas que esquivarán cada uno 
+de los meteoritos. Tendrá como atributo side, que indicará qué jugador es el que está
+ejecutando los movimientos"""
 
 class Player():
     def __init__(self, side):
@@ -34,7 +35,7 @@ class Player():
         if side == LEFT_PLAYER:
             self.pos = [5, SIZE[Y]//2]
         else:
-            self.pos = [SIZE[X] - 5, SIZE[Y]//2]#no sabemos por que, no se cambia segun cambiamos el tamaño: preguntar.
+            self.pos = [SIZE[X] - 5, SIZE[Y]//2]
 
     def get_pos(self):
         return self.pos
@@ -66,6 +67,11 @@ class Player():
     def __str__(self):
         return f"P<{SIDESSTR[self.side]}, {self.pos}>"
 
+
+"""Aquí tenemos la clase Ball, que representa cada meteorito, que se irán moviendo por el tablero y rebotando
+en los bordes a una velocidad específica, que aparece como 'velocity' y será un vector. Además también tendrá
+como atributo 'ball', que hará referencia a la bola de entre las seis que hay que esté ejcutando alguno de los
+métodos"""
 class Ball():
     def __init__(self, velocity, ball):
         self.ball = ball
@@ -79,9 +85,10 @@ class Ball():
         self.pos[X] += self.velocity[X]
         self.pos[Y] += self.velocity[Y]
         
-    #hacer funcion extra update2, que se llame cuando uno de los jugadores toca la bola, pa cambiarla de posicion a un sitio random:
+    #esta es una función de actualización a la que se llamará cuando alguno de los jugadores 
+    #sea alcanzado por alguna de las bolas, de modo que esta cambiará de posición a una aleatoria en ese instante.
     def update2(self):
-        self.pos[X] = random.randint(0,SIZE[X]) #no sabemos si pa que entre el 700 tenemos que poner 701 y 526
+        self.pos[X] = random.randint(0,SIZE[X]) 
         self.pos[Y] = random.randint(0,SIZE[Y])
 
     def bounce(self, AXIS):
@@ -92,6 +99,8 @@ class Ball():
         return f"B<{self.pos, self.velocity}>"
 
 
+""""Esta clase es la que nos va a decir el estado del juego en cada momento, crea los jugadores
+y la bola, así como otras variables que se necesitan, como la puntuación.  """
 class Game():
     def __init__(self, manager):
         self.players = manager.list( [Player(LEFT_PLAYER), Player(RIGHT_PLAYER)] )
@@ -115,6 +124,9 @@ class Game():
     def stop(self):
         self.running.value = 0
 
+    #los siguientes cuatro métodos especifican los movimientos que pueden realizar cada uno de los 
+    #jugadores, que se mueven controlados por el teclado por todo el tablero esquivando las bolas.
+    
     def moveUp(self, player):
         self.lock.acquire()
         p = self.players[player]
@@ -142,6 +154,9 @@ class Game():
         p.moveLeft()
         self.players[player] = p
         self.lock.release()
+        
+    #cuando las bolas chocan con algún jugador, lo que ocurrirá será que se sume un punto al jugador contrario Además, si alguno
+    #de los jugadores llega a 10 puntos o un múltiplo suyo, la velocidad de la bola aumentará, dificultando cada vez más el juego.
 
     def ball_collide(self, player, ball):
         self.lock.acquire()
@@ -191,6 +206,8 @@ class Game():
     def __str__(self):
         return f"G<{self.players[RIGHT_PLAYER]}:{self.players[LEFT_PLAYER]}:{self.balls[BALL1]}:{self.balls[BALL2]}:{self.balls[BALL3]}:{self.balls[BALL4]}:{self.balls[BALL5]}:{self.balls[BALL6]}:{self.running.value}>"
 
+""""Esta función va a ir analizando cada uno de los comandos que hay para llamar a la función
+correspondiente, según lo que se pide en cada momento que se haga."""
 def player(side, conn, game):
     try:
         print(f"starting player {SIDESSTR[side]}:{game.get_info()}")
@@ -207,7 +224,7 @@ def player(side, conn, game):
                     game.moveRight(side)
                 elif command == "left":
                     game.moveLeft(side)
-                elif command == "collide1":
+                elif command == "collide1": #un collide para cada bola
                     game.ball_collide(side,0)
                 elif command == "collide2":
                     game.ball_collide(side,1)

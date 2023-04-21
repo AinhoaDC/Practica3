@@ -1,9 +1,5 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Created on Mon Apr 10 12:20:02 2023
-
-@author: prpa
+Práctica realizada por Ainhoa Díaz Cabrera y Claudia Gómez Alonso.
 """
 
 from multiprocessing.connection import Client
@@ -11,19 +7,15 @@ import traceback
 import pygame
 import sys, os
 
-BLACK = (0, 0, 0)
+#a continuación tenemos una serie de constantes que nos servirán a lo largo del programa:
 WHITE = (255, 255, 255)
-RED = (255, 0, 0)
-BLUE = (0, 0, 255)
-YELLOW = (255,255,0)
-GREEN = (0,255,0)
+
 X = 0
 Y = 1
-SIZE = (800, 415) #al haber cambiado el tamaño de imagen, tenemos que cambiar algunas cosas de los limites en el rebote de la bola y hasta donde se pueden mover los personajes.
+SIZE = (800, 415) #el tamaño tiene que coincidir con el tamaño de la imagen que vamos a poner como fondo.
 
 LEFT_PLAYER = 0
 RIGHT_PLAYER = 1
-PLAYER_COLOR = [GREEN, YELLOW]
 PLAYER_HEIGHT = 100
 PLAYER_WIDTH = 100
 
@@ -34,7 +26,6 @@ BALL4 = 3
 BALL5 = 4 
 BALL6 = 5 
 
-BALL_COLOR = WHITE
 BALL_WIDTH = 36
 BALL_HEIGHT = 30
 FPS = 60
@@ -45,10 +36,14 @@ FPS = 60
 SIDES = ["left", "right"]
 SIDESSTR = ["left", "right"]
 
+#los siguientes comandos sirven para los sprites de los jugadores y las bolas.
 game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder,'img')
 player_img = pygame.image.load(os.path.join(img_folder, 'astr.png'))
 ball_img = pygame.image.load(os.path.join(img_folder, 'meteor.png'))
+
+
+"""De nuevo tenemos la clase player, ball y game con sus métodos correspondientes"""
 
 class Player():
     def __init__(self, side):
@@ -83,6 +78,7 @@ class Ball():
 
 
 class Game():
+    #la diferencia respecto a la versión anterior es que ahora en lugar de tener una sola bola, tendremos una lista de ellas, em nuestro caso hemos decidido que sean 6.
     def __init__(self):
         self.players = [Player(i) for i in range(2)]
         self.balls = [Ball(i) for i in range(6)]
@@ -96,7 +92,7 @@ class Game():
         self.players[side].set_pos(pos)
 
 
-    def get_ball(self,ball):
+    def get_ball(self,ball): #ahora en este tipo de métodos tenemos que añadir a qué bola de las de la lista nos estamos refiriendo.
         return self.balls[ball]
 
     def set_ball_pos(self, ball, pos):
@@ -112,7 +108,7 @@ class Game():
     def update(self, gameinfo):
         self.set_pos_player(LEFT_PLAYER, gameinfo['pos_left_player'])
         self.set_pos_player(RIGHT_PLAYER, gameinfo['pos_right_player'])
-        self.set_ball_pos(BALL1, gameinfo['pos_ball1'])
+        self.set_ball_pos(BALL1, gameinfo['pos_ball1'])#ahora tenemos que obtener información de varias bolas, no solo de una.
         self.set_ball_pos(BALL2, gameinfo['pos_ball2'])
         self.set_ball_pos(BALL3, gameinfo['pos_ball3'])
         self.set_ball_pos(BALL4, gameinfo['pos_ball4'])
@@ -131,6 +127,7 @@ class Game():
         return f"G<{self.players[RIGHT_PLAYER]}:{self.players[LEFT_PLAYER]}:{self.ball}>"
 
 
+#los sprites de los jugadores se programan igual que en la versión anterior, la única diferencia es que hemos cambiado la imagen.
 class Person(pygame.sprite.Sprite):
     def __init__(self, player):
       super().__init__()
@@ -147,7 +144,7 @@ class Person(pygame.sprite.Sprite):
     def __str__(self):
         return f"S<{self.player}>"
 
-
+#para los sprites de las bolas, seguimos la línea de lo que se hace para los jugadores pero aplicándoselo a nuestras seis bolas con la imagen que deseamos.
 class BallSprite(pygame.sprite.Sprite):
     def __init__(self, ball):
         super().__init__()
@@ -162,13 +159,14 @@ class BallSprite(pygame.sprite.Sprite):
         self.rect.centerx, self.rect.centery = pos
 
 
-
+""""En esta clase desarrollaremos todo el juego, se analizarán los eventos que van teniendo lugar en el 
+juego uno a uno para ejecutar los movimientos deseados en cada momento"""
 class Display():
     def __init__(self, game):
         self.game = game
         self.people = [Person(self.game.get_player(i)) for i in range(2)]
         
-        self.balls = [BallSprite(self.game.get_ball(i)) for i in range(6)]
+        self.balls = [BallSprite(self.game.get_ball(i)) for i in range(6)] #esta vez inicializamos con una lista de seis bolas
         
         self.all_sprites = pygame.sprite.Group()
         self.people_group = pygame.sprite.Group()
@@ -180,9 +178,10 @@ class Display():
 
         self.screen = pygame.display.set_mode(SIZE)
         self.clock =  pygame.time.Clock()  #FPS
-        self.background = pygame.image.load('planet.png')
+        self.background = pygame.image.load('planet.png')#elegimos la imagen que queremos poner en el fondo.
         pygame.init()
-
+    
+    #según la tecla que se pulse, se ejecuta una acción u otra.
     def analyze_events(self, side):
         events = []
         for event in pygame.event.get():
@@ -203,7 +202,7 @@ class Display():
         for ball in self.balls:
             if pygame.sprite.collide_rect(ball, self.people[side]):
                 if cont == 0 : 
-                    events.append("collide1")
+                    events.append("collide1") #los choques correspondientes a cada una de las seis bolas.
                 elif cont == 1 : 
                     events.append("collide2")
                 elif cont == 2 : 

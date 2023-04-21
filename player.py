@@ -1,3 +1,7 @@
+"""
+Práctica realizada por Ainhoa Díaz Cabrera y Claudia Gómez Alonso.
+"""
+
 from multiprocessing.connection import Client
 import traceback
 import pygame
@@ -7,17 +11,13 @@ import sys, os
 #a continuación tenemos una serie de constantes que nos servirán a lo largo del programa:
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-RED = (255, 0, 0)
-BLUE = (0, 0, 255)
-YELLOW = (255,255,0)
-GREEN = (0,255,0)
 X = 0
 Y = 1
 SIZE = (787, 525) #el tamaño tiene que coincidir con el tamaño de la imagen que vamos a poner como fondo.
 
 LEFT_PLAYER = 0
 RIGHT_PLAYER = 1
-PLAYER_COLOR = [GREEN, YELLOW]
+
 PLAYER_HEIGHT = 100
 PLAYER_WIDTH = 95
 

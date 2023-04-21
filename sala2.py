@@ -9,10 +9,11 @@ import traceback
 import sys
 import random
 
+#a continuación tenemos una serie de constantes que nos servirán a lo largo del programa:
 LEFT_PLAYER = 0
 RIGHT_PLAYER = 1
 SIDESSTR = ["left", "right"]
-SIZE = (787, 525)
+SIZE = (787, 525)#el tamaño tiene que coincidir con el tamaño de la imagen que vamos a poner como fondo.
 X=0
 Y=1
 DELTA = 30
@@ -195,7 +196,7 @@ class Game():
 
 
 """"Esta función va a ir analizando cada uno de los comandos que hay para llamar a la función
-correspondiente, según lo que se pide en cada momento que se haga,"""
+correspondiente, según lo que se pide en cada momento que se haga."""
 def player(side, conn, game):
     try:
         print(f"starting player {SIDESSTR[side]}:{game.get_info()}")
